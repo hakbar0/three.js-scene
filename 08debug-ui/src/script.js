@@ -41,6 +41,14 @@ gui.addColor(colorFormats, "string").onChange((color) => {
   material.color.set(color);
 });
 
+const parameters = {
+  spin: () => {
+    gsap.to(mesh.rotation, { duration: 1, y: mesh.rotation.y + Math.PI * 2 });
+  },
+};
+
+gui.add(parameters, "spin");
+
 /**
  * Sizes
  */
