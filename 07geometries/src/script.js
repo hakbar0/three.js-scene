@@ -9,7 +9,7 @@ const canvas = document.querySelector("canvas.webgl");
 
 const geometry = new THREE.BufferGeometry();
 
-const count = 50;
+const count = 5000;
 const positionsArray = new Float32Array(count * 3 * 3);
 
 for (let i = 0; i < count * 3 * 3; i++) {
