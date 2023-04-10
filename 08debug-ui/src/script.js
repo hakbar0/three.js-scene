@@ -30,13 +30,13 @@ gui.add(mesh, "visible");
 gui.add(material, "wireframe");
 
 const colorFormats = {
-  string: "#ffffff",
-  int: 0xffffff,
+  string: "#0xff0000",
+  int: 0xff0000,
   object: { r: 1, g: 1, b: 1 },
   array: [1, 1, 1],
 };
 
-gui.addColor(colorFormats, "string").onChange(function (color) {
+gui.addColor(colorFormats, "string").onChange((color) => {
   // set the color of the material to the selected color
   material.color.set(color);
 });
