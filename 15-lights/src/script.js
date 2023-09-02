@@ -39,6 +39,14 @@ scene.add(pointLight);
 const rectAreaLight = new THREE.RectAreaLight(0x4e00ff, 2, 1, 1);
 scene.add(rectAreaLight);
 
+//
+const hemisphereLightHelper = new THREE.HemisphereLightHelper(
+  hemisphereLight,
+  0.5
+);
+
+scene.add(hemisphereLightHelper);
+
 /**
  * Objects
  */
