@@ -20,8 +20,10 @@ const scene = new THREE.Scene();
  * Lights
  */
 
-const light = new THREE.AmbientLight(0x404040, 10); // soft white light
+const light = new THREE.AmbientLight(0x404040, 1); // soft white light
 scene.add(light);
+
+gui.add(light, "intensity").min(0).max(100).step(0.01);
 
 /**
  * Objects
