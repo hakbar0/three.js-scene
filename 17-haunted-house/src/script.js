@@ -8,7 +8,7 @@ THREE.ColorManagement.enabled = false;
  * Base
  */
 // Debug
-const gui = new dat.GUI();
+// const gui = new dat.GUI();
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
@@ -180,16 +180,16 @@ for (let i = 0; i < 50; i++) {
  */
 // Ambient light
 const ambientLight = new THREE.AmbientLight("#b9d5ff", 0.12);
-gui.add(ambientLight, "intensity").min(0).max(1).step(0.001);
+// gui.add(ambientLight, "intensity").min(0).max(1).step(0.001);
 scene.add(ambientLight);
 
 // Directional light
 const moonLight = new THREE.DirectionalLight("#b9d5ff", 0.12);
 moonLight.position.set(4, 5, -2);
-gui.add(moonLight, "intensity").min(0).max(1).step(0.001);
-gui.add(moonLight.position, "x").min(-5).max(5).step(0.001);
-gui.add(moonLight.position, "y").min(-5).max(5).step(0.001);
-gui.add(moonLight.position, "z").min(-5).max(5).step(0.001);
+// gui.add(moonLight, "intensity").min(0).max(1).step(0.001);
+// gui.add(moonLight.position, "x").min(-5).max(5).step(0.001);
+// gui.add(moonLight.position, "y").min(-5).max(5).step(0.001);
+// gui.add(moonLight.position, "z").min(-5).max(5).step(0.001);
 scene.add(moonLight);
 
 // Door light
@@ -267,6 +267,69 @@ doorLight.castShadow = true;
 ghost1.castShadow = true;
 ghost2.castShadow = true;
 ghost3.castShadow = true;
+
+// Spooky Ghost
+const ghostGeometry = new THREE.SphereBufferGeometry(0.5, 32, 32);
+const ghostMaterial = new THREE.MeshStandardMaterial({
+  color: 0xffffff,
+  transparent: true,
+  opacity: 0.5,
+});
+
+const offsetFromWall = 2; // Adjust this to set the distance away from the house.
+
+// Create the ghost mesh
+const spookyGhost = new THREE.Mesh(ghostGeometry, ghostMaterial);
+
+// Set the ghost's position to be in front of the house
+spookyGhost.position.set(
+  0,
+  house.position.y + 1,
+  house.position.z + walls.geometry.parameters.depth / 2 + offsetFromWall
+);
+scene.add(spookyGhost);
+
+// Ghost Mouth
+const mouthGeometry = new THREE.SphereBufferGeometry(0.15, 32, 32);
+const mouthMaterial = new THREE.MeshStandardMaterial({
+  color: 0x333333,
+  transparent: true,
+  opacity: 0.75,
+});
+
+const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
+mouth.position.set(0, -0.1, 0.4); // Adjust to place the mouth correctly
+mouth.scale.setY(0.3); // Makes the sphere elongated vertically to resemble a mouth
+spookyGhost.add(mouth);
+
+// Ghost Eyes
+const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x333333 });
+const leftEye = new THREE.Mesh(
+  new THREE.SphereBufferGeometry(0.05),
+  eyeMaterial
+);
+leftEye.position.set(-0.15, 0.1, 0.5);
+spookyGhost.add(leftEye);
+
+const rightEye = leftEye.clone();
+rightEye.position.set(0.15, 0.1, 0.5);
+spookyGhost.add(rightEye);
+
+let initialGhostY = spookyGhost.position.y;
+let ghostDirection = 1;
+function updateGhost() {
+  // Floating logic
+  if (spookyGhost.position.y > initialGhostY + 0.2) ghostDirection = -1;
+  if (spookyGhost.position.y < initialGhostY - 0.2) ghostDirection = 1;
+  spookyGhost.position.y += ghostDirection * 0.01;
+
+  // Make the ghost face the camera
+  spookyGhost.lookAt(camera.position);
+
+  // Request the next frame
+  requestAnimationFrame(updateGhost);
+}
+updateGhost();
 
 /**
  * Animate
