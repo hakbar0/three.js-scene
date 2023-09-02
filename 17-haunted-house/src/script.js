@@ -274,19 +274,6 @@ spookyGhost.position.set(
 );
 scene.add(spookyGhost);
 
-// Ghost Mouth
-const mouthGeometry = new THREE.SphereBufferGeometry(0.15, 32, 32);
-const mouthMaterial = new THREE.MeshStandardMaterial({
-  color: 0x333333,
-  transparent: true,
-  opacity: 0.75,
-});
-
-const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
-mouth.position.set(0, -0.1, 0.4); // Adjust to place the mouth correctly
-mouth.scale.setY(0.3); // Makes the sphere elongated vertically to resemble a mouth
-spookyGhost.add(mouth);
-
 // Ghost Eyes
 const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x333333 });
 const leftEye = new THREE.Mesh(
