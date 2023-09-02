@@ -198,18 +198,6 @@ doorLight.position.set(0, 2.2, 2.7);
 house.add(doorLight);
 
 /**
- * Ghosts
- */
-const ghost1 = new THREE.PointLight("#ff00ff", 2, 3);
-scene.add(ghost1);
-
-const ghost2 = new THREE.PointLight("#00ffff", 2, 3);
-scene.add(ghost2);
-
-const ghost3 = new THREE.PointLight("#ffff00", 2, 3);
-scene.add(ghost3);
-
-/**
  * Sizes
  */
 const sizes = {
@@ -264,9 +252,6 @@ renderer.setClearColor("#262837");
 renderer.shadowMap.enabled = true;
 moonLight.castShadow = true;
 doorLight.castShadow = true;
-ghost1.castShadow = true;
-ghost2.castShadow = true;
-ghost3.castShadow = true;
 
 // Spooky Ghost
 const ghostGeometry = new THREE.SphereBufferGeometry(0.5, 32, 32);
@@ -332,6 +317,46 @@ function updateGhost() {
 updateGhost();
 
 /**
+ * Ghosts
+ */
+const ghost1Body = new THREE.Mesh(ghostGeometry, ghostMaterial);
+scene.add(ghost1Body);
+const ghost1 = new THREE.PointLight("#ff00ff", 2, 3);
+scene.add(ghost1);
+
+const ghost2Body = new THREE.Mesh(ghostGeometry, ghostMaterial);
+scene.add(ghost2Body);
+const ghost2 = new THREE.PointLight("#00ffff", 2, 3);
+scene.add(ghost2);
+
+const ghost3Body = new THREE.Mesh(ghostGeometry, ghostMaterial);
+scene.add(ghost3Body);
+const ghost3 = new THREE.PointLight("#ffff00", 2, 3);
+scene.add(ghost3);
+
+ghost1.castShadow = true;
+ghost2.castShadow = true;
+ghost3.castShadow = true;
+
+const eyeGeometry = new THREE.SphereBufferGeometry(0.1, 32, 32);
+
+function createEyes(parent) {
+  const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+  leftEye.position.set(-0.2, 0, 0.5); // Adjust the position as per your ghost body size
+  parent.add(leftEye);
+
+  const rightEye = leftEye.clone();
+  rightEye.position.x = 0.2;
+  parent.add(rightEye);
+
+  return [leftEye, rightEye];
+}
+
+createEyes(ghost1Body);
+createEyes(ghost2Body);
+createEyes(ghost3Body);
+
+/**
  * Animate
  */
 const clock = new THREE.Clock();
@@ -344,17 +369,20 @@ const tick = () => {
   ghost1.position.x = Math.cos(ghost1Angle) * 4;
   ghost1.position.z = Math.sin(ghost1Angle) * 4;
   ghost1.position.y = Math.sin(elapsedTime * 3);
+  ghost1Body.position.copy(ghost1.position); // Copy position from light to body
 
   const ghost2Angle = -elapsedTime * 0.32;
   ghost2.position.x = Math.cos(ghost2Angle) * 5;
   ghost2.position.z = Math.sin(ghost2Angle) * 5;
   ghost2.position.y = Math.sin(elapsedTime * 4) + Math.sin(elapsedTime * 2.5);
+  ghost2Body.position.copy(ghost2.position); // Copy position from light to body
 
   const ghost3Angle = -elapsedTime * 0.18;
   ghost3.position.x =
     Math.cos(ghost3Angle) * (7 + Math.sin(elapsedTime * 0.32));
   ghost3.position.z = Math.sin(ghost3Angle) * (7 + Math.sin(elapsedTime * 0.5));
   ghost3.position.y = Math.sin(elapsedTime * 4) + Math.sin(elapsedTime * 2.5);
+  ghost3Body.position.copy(ghost3.position); // Copy position from light to body
 
   // Update controls
   controls.update();
