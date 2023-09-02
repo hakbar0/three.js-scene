@@ -79,7 +79,31 @@ const bush3 = new THREE.Mesh(bushesGeomery, bushMaterial);
 bush3.scale.set(0.4, 0.4, 0.4);
 bush3.position.set(-0.8, 0.1, 2.2);
 
-house.add(bush3, bush2, bush1);
+const bush4 = new THREE.Mesh(bushesGeomery, bushMaterial);
+bush4.scale.set(0.15, 0.15, 0.15);
+bush4.position.set(-1, 0.05, 2.6);
+
+house.add(bush3, bush2, bush1, bush4);
+
+// Graves
+const graves = new THREE.Group();
+scene.add(graves);
+
+const graveGemery = new THREE.BoxBufferGeometry(0.6, 0.8, 0.2);
+const graveMaterial = new THREE.MeshStandardMaterial({ color: "#b2b6b1" });
+
+for (let i = 0; i < 50; i++) {
+  const radius = 3 + Math.random() * 6;
+  const angle = Math.random() * Math.PI * 2;
+  const x = Math.sin(angle) * radius;
+  const z = Math.cos(angle) * radius;
+
+  const grave = new THREE.Mesh(graveGemery, graveMaterial);
+  grave.position.set(x, 0.8 / 2, z);
+  grave.rotation.y = (Math.random() - 0.5) * 0.4;
+  grave.rotation.z = (Math.random() - 0.5) * 0.4;
+  graves.add(grave);
+}
 
 /**
  * Lights
