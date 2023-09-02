@@ -23,7 +23,17 @@ const scene = new THREE.Scene();
 const light = new THREE.AmbientLight(0x404040, 1); // soft white light
 scene.add(light);
 
+const directionalLight = new THREE.DirectionalLight(0x00fffc, 1);
+directionalLight.position.set(1, 0.25, 0);
+scene.add(directionalLight);
+
 gui.add(light, "intensity").min(0).max(100).step(0.01);
+
+const hemisphereLight = new THREE.HemisphereLight(0xff0000, 0x0000ff, 0.3);
+scene.add(hemisphereLight);
+
+const pointLight = new THREE.PointLight(0xff9000, 0.3);
+scene.add(pointLight);
 
 /**
  * Objects
