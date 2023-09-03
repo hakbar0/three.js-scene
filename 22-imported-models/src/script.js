@@ -22,6 +22,19 @@ const scene = new THREE.Scene();
  * Models
  */
 
+const loader = new THREE.TextureLoader();
+const texture = loader.load("sky/3.png");
+
+const skyboxMaterial = new THREE.MeshBasicMaterial({
+  map: texture,
+  side: THREE.BackSide,
+});
+
+const skyboxGeometry = new THREE.SphereGeometry(500, 60, 40);
+
+const skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
+scene.add(skybox);
+
 const dracoLoader = new DRACOLoader();
 //faster worker isntance
 dracoLoader.setDecoderPath("/draco/");
@@ -31,14 +44,50 @@ gltfLoader.setDRACOLoader(dracoLoader);
 
 let mixer = null;
 
+let foxClips = [];
+let currentAction = null;
+
 gltfLoader.load("/models/Fox/glTF/Fox.gltf", (gltf) => {
   mixer = new THREE.AnimationMixer(gltf.scene);
-  const action = mixer.clipAction(gltf.animations[0]);
-  action.play();
-  // for fox scaling
+
+  foxClips = gltf.animations; // Store all the animation clips
+
+  // Set default action (assuming there's at least one animation)
+  if (foxClips.length > 0) {
+    currentAction = mixer.clipAction(foxClips[0]);
+    currentAction.play();
+  }
+
+  // Fox scaling
   gltf.scene.scale.set(0.025, 0.025, 0.025);
   scene.add(gltf.scene);
 });
+
+const debugObject = {};
+
+debugObject.switchFoxAnimation = (animationIndex) => {
+  if (currentAction) {
+    currentAction.stop();
+  }
+
+  if (foxClips[animationIndex]) {
+    currentAction = mixer.clipAction(foxClips[animationIndex]);
+    currentAction.play();
+  } else {
+    console.warn(`No animation found for index ${animationIndex}`);
+  }
+};
+
+const foxAnimations = {
+  "Animation 0": 0,
+  "Animation 1": 1,
+  "Animation 2": 2,
+};
+
+gui
+  .add(debugObject, "switchFoxAnimation", foxAnimations)
+  .name("Fox Animations")
+  .onChange(debugObject.switchFoxAnimation);
 
 gltfLoader.load("/models/Duck/glTF-Draco/Duck.gltf", (gltf) => {
   scene.add(gltf.scene);
@@ -55,14 +104,17 @@ gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
 /**
  * Floor
  */
-const floor = new THREE.Mesh(
-  new THREE.PlaneGeometry(10, 10),
-  new THREE.MeshStandardMaterial({
-    color: "#444444",
-    metalness: 0,
-    roughness: 0.5,
-  })
-);
+
+const glassMaterial = new THREE.MeshStandardMaterial({
+  color: 0xffffff, // white or you can keep it as "#444444" if you want a tint
+  metalness: 0,
+  roughness: 0.1, // to make it smoother
+  transparent: true,
+  opacity: 0.8, // adjust as needed for transparency level
+  reflectivity: 0.5,
+});
+
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), glassMaterial);
 floor.receiveShadow = true;
 floor.rotation.x = -Math.PI * 0.5;
 scene.add(floor);
@@ -114,7 +166,7 @@ const camera = new THREE.PerspectiveCamera(
   75,
   sizes.width / sizes.height,
   0.1,
-  100
+  1500
 );
 camera.position.set(2, 2, 2);
 scene.add(camera);
