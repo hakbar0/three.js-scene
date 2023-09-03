@@ -39,7 +39,7 @@ particlesMaterial.blending = THREE.AdditiveBlending;
 particlesMaterial.vertexColors = true;
 
 const particlesGeometry = new THREE.BufferGeometry();
-const count = 6000;
+const count = 8000;
 
 const positions = new Float32Array(count * 3);
 const colors = new Float32Array(count * 3);
@@ -119,6 +119,19 @@ const clock = new THREE.Clock();
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
 
+  //update particles
+  //   particles.rotation.x = elapsedTime * 0.01;
+
+  for (let i = 0; i < count; i++) {
+    const i3 = i * 3;
+    const x = particlesGeometry.attributes.position.array[i3 + 0];
+
+    particlesGeometry.attributes.position.array[i3 + 1] = Math.sin(
+      elapsedTime + x
+    );
+  }
+
+  particlesGeometry.attributes.position.needsUpdate = true;
   // Update controls
   controls.update();
 
