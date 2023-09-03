@@ -2,6 +2,8 @@ import * as THREE from "three";
 import * as dat from "lil-gui";
 import gsap from "gsap";
 
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
+
 THREE.ColorManagement.enabled = false;
 
 /**
@@ -28,6 +30,12 @@ const scene = new THREE.Scene();
 
 const textureLoader = new THREE.TextureLoader();
 const gradientTexture = textureLoader.load("textures/gradients/3.jpg");
+
+const loader = new FBXLoader();
+loader.load("3dmodel/Rocket.fbx", function (object) {
+  object.scale.set(0.001, 0.001, 0.001);
+  scene.add(object);
+});
 
 gradientTexture.magFilter = THREE.NearestFilter;
 
