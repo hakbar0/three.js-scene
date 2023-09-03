@@ -102,24 +102,6 @@ gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
 });
 
 /**
- * Floor
- */
-
-const glassMaterial = new THREE.MeshStandardMaterial({
-  color: 0xffffff, // white or you can keep it as "#444444" if you want a tint
-  metalness: 0,
-  roughness: 0.1, // to make it smoother
-  transparent: true,
-  opacity: 0.8, // adjust as needed for transparency level
-  reflectivity: 0.5,
-});
-
-const floor = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), glassMaterial);
-floor.receiveShadow = true;
-floor.rotation.x = -Math.PI * 0.5;
-scene.add(floor);
-
-/**
  * Lights
  */
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
