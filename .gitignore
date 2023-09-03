@@ -12,3 +12,4 @@
 /16-shadows/node_modules
 /16-shadows-final/node_modules
 /17-haunted-house/node_modules
+**/node_modules/
