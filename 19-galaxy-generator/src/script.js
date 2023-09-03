@@ -212,6 +212,9 @@ const tick = () => {
   // Update controls
   controls.update();
 
+  // Rotate the galaxy
+  points.rotation.y += 0.05;
+
   // Render
   renderer.render(scene, camera);
 
