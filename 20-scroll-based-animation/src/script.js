@@ -36,8 +36,8 @@ const material = new THREE.MeshToonMaterial({
   gradientMap: gradientTexture,
 });
 
+// Objects
 const objectsDistance = 4;
-// Meshes
 const mesh1 = new THREE.Mesh(new THREE.TorusGeometry(1, 0.4, 16, 60), material);
 const mesh2 = new THREE.Mesh(new THREE.ConeGeometry(1, 2, 32), material);
 const mesh3 = new THREE.Mesh(
@@ -48,6 +48,10 @@ const mesh3 = new THREE.Mesh(
 mesh1.position.y = -objectsDistance * 0;
 mesh2.position.y = -objectsDistance * 1;
 mesh3.position.y = -objectsDistance * 2;
+
+mesh1.position.x = 2;
+mesh2.position.x = -2;
+mesh3.position.x = 2;
 
 scene.add(mesh1, mesh2, mesh3);
 
@@ -78,6 +82,10 @@ window.addEventListener("resize", () => {
 /**
  * Camera
  */
+// Group
+const cameraGroup = new THREE.Group();
+scene.add(cameraGroup);
+
 // Base camera
 const camera = new THREE.PerspectiveCamera(
   35,
@@ -86,7 +94,7 @@ const camera = new THREE.PerspectiveCamera(
   100
 );
 camera.position.z = 6;
-scene.add(camera);
+cameraGroup.add(camera);
 
 /**
  * Lights
@@ -111,12 +119,47 @@ gui.addColor(parameters, "materialColor").onChange(() => {
 });
 
 /**
+ * Scroll
+ */
+let scrollY = window.scrollY;
+
+window.addEventListener("scroll", () => {
+  scrollY = window.scrollY;
+});
+
+/**
+ * Cursor
+ */
+const cursor = {};
+cursor.x = 0;
+cursor.y = 0;
+
+window.addEventListener("mousemove", (event) => {
+  cursor.x = event.clientX / sizes.width - 0.5;
+  cursor.y = event.clientY / sizes.height - 0.5;
+});
+
+/**
  * Animate
  */
 const clock = new THREE.Clock();
+let previousTime = 0;
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
+  const deltaTime = elapsedTime - previousTime;
+  previousTime = elapsedTime;
+
+  // Animate camera
+  camera.position.y = (-scrollY / sizes.height) * objectsDistance;
+
+  const parallaxX = cursor.x;
+  const parallaxY = -cursor.y;
+
+  cameraGroup.position.x +=
+    (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
+  cameraGroup.position.y +=
+    (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
 
   for (const mesh of sectionMeshes) {
     mesh.rotation.x = elapsedTime * 0.1;
