@@ -39,6 +39,21 @@ const environmentMapTexture = cubeTextureLoader.load([
 const world = new CANNON.World();
 world.gravity.set(0, -9.81, 0);
 
+// materials
+const defaultMaterial = new CANNON.Material("default");
+
+const defaultContactMaterial = new CANNON.ContactMaterial(
+  defaultMaterial,
+  defaultMaterial,
+  {
+    friction: 0.1,
+    restitution: 0.9,
+  }
+);
+
+world.addContactMaterial(defaultContactMaterial);
+world.defaultContactMaterial = defaultContactMaterial;
+
 //sphere
 const sphereShape = new CANNON.Sphere(0.5);
 const sphereBody = new CANNON.Body({
