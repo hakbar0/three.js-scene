@@ -29,13 +29,28 @@ dracoLoader.setDecoderPath("/draco/");
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
 
-gltfLoader.load("/models/Duck/glTF-Draco/Duck.gltf", (gltf) => {
+let mixer = null;
+
+gltfLoader.load("/models/Fox/glTF/Fox.gltf", (gltf) => {
+  mixer = new THREE.AnimationMixer(gltf.scene);
+  const action = mixer.clipAction(gltf.animations[0]);
+  action.play();
+  // for fox scaling
+  gltf.scene.scale.set(0.025, 0.025, 0.025);
   scene.add(gltf.scene);
 });
 
-// gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
-//   scene.add(gltf.scene);
-// });
+gltfLoader.load("/models/Duck/glTF-Draco/Duck.gltf", (gltf) => {
+  scene.add(gltf.scene);
+  gltf.scene.position.x += 2;
+  gltf.scene.rotation.y = -Math.PI / 2; // 90 degrees in radians
+});
+
+gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
+  scene.add(gltf.scene);
+  gltf.scene.scale.set(3, 3, 3);
+  gltf.scene.position.x -= 2;
+});
 
 /**
  * Floor
@@ -131,6 +146,10 @@ const tick = () => {
   const elapsedTime = clock.getElapsedTime();
   const deltaTime = elapsedTime - previousTime;
   previousTime = elapsedTime;
+
+  if (mixer) {
+    mixer.update(deltaTime);
+  }
 
   // Update controls
   controls.update();
